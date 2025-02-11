@@ -1,0 +1,231 @@
+/* -----------------------------
+   Podstawowe zmienne i kolory
+   ----------------------------- */
+:root {
+  /* Jasny motyw */
+  --body-bg-color: #f8f9fa;
+  --body-text-color: #212529;
+  --sidebar-bg-color: #f1f1f1;
+  --navbar-bg-color: #f8f9fa;
+
+  /* Kolory do trybu ciemnego */
+  --dark-body-bg: #343a40;
+  --dark-body-text: #f8f9fa;
+  --dark-sidebar-bg: #3e4347;
+  --dark-navbar-bg: #3e4347;
+
+  --transition-speed: 0.3s;
+}
+
+/* -----------------------------
+   Styl ogólny (jasny motyw)
+   ----------------------------- */
+body {
+  background-color: var(--body-bg-color);
+  color: var(--body-text-color);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar (lewa nawigacja) – jasny */
+.sidebar {
+  background-color: var(--sidebar-bg-color);
+  min-height: 100vh;
+  padding: 15px;
+  border-right: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Navbar (u góry) – jasny */
+.navbar {
+  background-color: var(--navbar-bg-color);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* -----------------------------
+   Tryb ciemny
+   ----------------------------- */
+body.dark-theme {
+  background-color: var(--dark-body-bg);
+  color: var(--dark-body-text);
+}
+
+body.dark-theme .navbar {
+  background-color: var(--dark-navbar-bg) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-theme .sidebar {
+  background-color: var(--dark-sidebar-bg);
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+body.dark-theme .sidebar .nav-link,
+body.dark-theme .navbar .nav-link,
+body.dark-theme .navbar-brand {
+  color: #f8f9fa !important;
+}
+
+/* -----------------------------
+   List-group (produkty)
+   ----------------------------- */
+
+/* Dla jasnego motywu – pastelowe kolory w zależności od stanu */
+.list-group-item.product-item.in-warehouse {
+  background-color: #e6ffe6; /* jasno-zielone tło dla magazynu */
+}
+.list-group-item.product-item.on-road {
+  background-color: #ffe6e6; /* jasno-czerwone tło dla wyjazdu */
+}
+
+/* Dla ciemnego motywu – przyciemnione pastele */
+body.dark-theme .list-group-item.product-item.in-warehouse {
+  background-color: #446644; /* ciemniejsza zieleń */
+  color: #fff;
+}
+body.dark-theme .list-group-item.product-item.on-road {
+  background-color: #663333; /* ciemniejszy czerwony/brąz */
+  color: #fff;
+}
+
+/* Usuwamy obramowanie w trybie ciemnym dla list-group */
+body.dark-theme .list-group-item {
+  border-color: rgba(255,255,255,0.2);
+}
+
+/* Efekt hover (jasny motyw) – produkt można kliknąć, więc kursor i tło */
+.list-group-item.product-item {
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+.list-group-item.product-item:hover {
+  background-color: #f2f2f2;
+  color: #000;
+}
+
+/* Hover, jeśli produkt ma pastelowe tło (opcjonalnie bardziej precyzyjnie) */
+.list-group-item.product-item.in-warehouse:hover {
+  background-color: #d6ffd6;
+}
+.list-group-item.product-item.on-road:hover {
+  background-color: #ffd6d6;
+}
+
+/* Efekt hover (ciemny motyw) */
+body.dark-theme .list-group-item.product-item:hover {
+  background-color: #505050; /* ciemniejszy szary */
+  color: #fff;
+}
+body.dark-theme .list-group-item.product-item.in-warehouse:hover {
+  background-color: #557755; /* przyciemniona zieleń */
+}
+body.dark-theme .list-group-item.product-item.on-road:hover {
+  background-color: #775555; /* przyciemniony czerwono-brąz */
+}
+
+/* -----------------------------
+   Karty i sekcje
+   ----------------------------- */
+.card {
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  font-weight: 500;
+}
+
+body.dark-theme .card {
+  background-color: #3e4347;
+  border-color: rgba(255,255,255,0.1);
+}
+
+body.dark-theme .card-header {
+  background-color: #3e4347;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #f8f9fa;
+}
+
+/* -----------------------------
+   Przycisk WYJAZ / Sortuj itp.
+   ----------------------------- */
+.btn-danger {
+  margin-top: 1rem;
+}
+
+body.dark-theme .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+body.dark-theme .btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* -----------------------------
+   Layout aside z wykresem
+   ----------------------------- */
+aside.sidebar {
+  padding: 1rem;
+  text-align: center;
+  min-height: 100vh;
+}
+
+/* Kontener wykresu – rezerwuje miejsce */
+.chart-container {
+  width: 100%;
+  max-width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+/* W trybie ciemnym kolory tekstu w aside mogą wymagać poprawy */
+body.dark-theme aside.sidebar,
+body.dark-theme aside.sidebar h5 {
+  color: #f8f9fa;
+}
+
+/* -----------------------------
+   Dopasowanie nagłówków / paddingu
+   ----------------------------- */
+h2, h5 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Rozmieszczenie zawartości – możesz dodać tu np. padding wokół sekcji w main */
+main {
+  padding: 1rem;
+}
+
+/* -----------------------------
+   Ulepszenia w stylu minimal
+   ----------------------------- */
+body.dark-theme input.form-control {
+  background-color: #4a4f54;
+  color: #f8f9fa;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Ewentualnie styl list-group w trybie jasnym i ciemnym, by dobrze wyglądały */
+.list-group-item {
+  border: 1px solid rgba(0,0,0,0.125);
+}
+body.dark-theme .list-group-item {
+  background-color: #3e4347;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+/* -----------------------------
+   Dopasowanie nav-link hover
+   ----------------------------- */
+.sidebar .nav-link:hover,
+.navbar .nav-link:hover {
+  color: #007bff !important;
+}

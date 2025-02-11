@@ -1,0 +1,20 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block title %}Zestawy{% endblock %}
+
+{% block content %}
+  <h2>Zestawy</h2>
+  {% if komplety %}
+    <ul class="list-group">
+      {% for komplet in komplety %}
+        <li class="list-group-item">
+          <strong>{{ komplet.name }}</strong>
+          <!-- Możesz dodać więcej informacji lub link do szczegółów -->
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Brak zestawów.</p>
+  {% endif %}
+{% endblock %}

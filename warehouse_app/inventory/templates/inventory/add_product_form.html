@@ -1,0 +1,14 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block title %}Dodaj produkt{% endblock %}
+
+{% block content %}
+<h2>Dodaj nowy produkt</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>
+{% endblock %}

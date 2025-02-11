@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <title>Logowanie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS (CDN) -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    >
+
+    <!-- Style na wzór "Sign-In" z dokumentacji Bootstrapa -->
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background-color: #f8f9fa;
+      }
+      .form-signin {
+        width: 100%;
+        max-width: 330px;
+        padding: 15px;
+        margin: auto;
+      }
+      .form-signin .checkbox {
+        font-weight: 400;
+      }
+      .form-signin .form-control {
+        position: relative;
+        box-sizing: border-box;
+        height: auto;
+        margin-bottom: 10px;
+      }
+      .form-signin .form-control:focus {
+        z-index: 2;
+      }
+      .form-signin input[type="text"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+    </style>
+  </head>
+
+  <body class="text-center">
+    <!-- Formularz logowania Django -->
+    <form method="post" class="form-signin" novalidate>
+      {% csrf_token %}
+
+      <!-- LOGO -->
+
+
+      <img class="mb-4"
+           src="https://www.termedia.pl/g/events/common/logos/logo_4936.png"
+           alt="Logo"
+           height="72">
+
+
+      <h1 class="h3 mb-3 font-weight-normal">Proszę się zalogować</h1>
+
+      <!-- Alert przy błędach formularza -->
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          <strong>Nieprawidłowe dane:</strong> sprawdź poprawność pól.
+        </div>
+      {% endif %}
+
+      <!-- Pola formularza Django: username, password -->
+      <p>Nazwa uzytkownika<br>{{ form.username }}
+        </p>
+
+<!--      <label for="id_password" class="sr-only">Hasło</label>-->
+
+      <p>Hasło<br> {{ form.password }}
+        </p>
+
+      <button class="btn btn-lg btn-primary btn-block" type="submit">
+        Zaloguj się
+      </button>
+      <p class="mt-5 mb-3 text-muted">Jakub Bednarczyk&copy; 2025</p>
+    </form>
+
+    <!-- Bootstrap JS (opcjonalnie) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

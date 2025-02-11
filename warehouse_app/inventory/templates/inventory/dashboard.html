@@ -1,0 +1,176 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard Magazynu{% endblock %}
+
+{% block content %}
+  <h2>Produkty na wyjeździe</h2>
+  <div id="onRoadProducts">
+    <ul class="list-group">
+      {% for product in on_road_products %}
+      <li class="list-group-item">
+        {{ product.brand }} {{ product.model }} ({{ product.code }})
+      </li>
+      {% endfor %}
+    </ul>
+    <!-- Tu możesz dodać przycisk "załaduj kolejne 5" przez AJAX -->
+  </div>
+
+  <hr>
+  <h2>Wszystkie produkty</h2>
+  <!-- Formularz sortowania -->
+  <form id="sortForm" method="get" class="form-inline mb-3">
+    <label for="sort_by" class="mr-2">Sortuj po:</label>
+    <select name="sort_by" id="sort_by" class="form-control mr-2">
+      <option value="created_at">Data dodania</option>
+      <option value="brand">Marka</option>
+      <option value="code">Kod</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Sortuj</button>
+  </form>
+  <!-- Lista produktów z paginacją -->
+  <div id="productsList">
+    <ul class="list-group" id="productsList">
+  {% for product in products %}
+  <li class="list-group-item product-item"
+      data-id="{{ product.id }}">
+    {{ product.brand }} {{ product.model }} ({{ product.code }})
+    {% if product.custom_name %}- {{ product.custom_name }}{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+    <!-- Paginacja -->
+    <nav class="mt-2">
+      <ul class="pagination">
+        {% if products.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ products.previous_page_number }}&sort_by={{ request.GET.sort_by }}">Poprzednia</a>
+          </li>
+        {% endif %}
+        <li class="page-item active"><span class="page-link">{{ products.number }}</span></li>
+        {% if products.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ products.next_page_number }}&sort_by={{ request.GET.sort_by }}">Następna</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Przycisk WYJAZ, otwierający modal formularza -->
+  <div class="mt-4">
+    <button id="openBorrowModal" class="btn btn-danger">WYJAZ</button>
+  </div>
+
+  <!-- Modal z formularzem wypożyczenia (lista dostępnych produktów + wyszukiwarka + wybrane) -->
+  <div class="modal fade" id="borrowModal" tabindex="-1" role="dialog" aria-labelledby="borrowModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">  <!-- większy modal -->
+      <div class="modal-content bg-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="borrowModalLabel">Wypożyczenie produktów</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Zamknij">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="borrowForm" method="post" action="{% url 'inventory:borrow_items' %}">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="borrow_start">Data rozpoczęcia</label>
+                <input type="date" class="form-control" id="borrow_start" name="borrow_start" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="borrow_end">Data zakończenia</label>
+                <input type="date" class="form-control" id="borrow_end" name="borrow_end" required>
+              </div>
+            </div>
+
+            <!-- Wyszukiwarka produktów w magazynie -->
+            <div class="form-group">
+              <label for="productSearch">Wyszukaj produkt</label>
+              <input type="text" class="form-control" id="productSearch" placeholder="Wpisz frazę (marka, model)...">
+            </div>
+
+            <!-- Lista produktów dostępnych -->
+            <div class="form-group">
+              <label>Dostępne produkty:</label>
+              <ul id="availableProductsList" class="list-group">
+                {% for ap in available_products %}
+                <li class="list-group-item d-flex justify-content-between align-items-center available-product"
+                    data-id="{{ ap.id }}"
+                    data-name="{{ ap.brand }} {{ ap.model }}">
+                  {{ ap.brand }} {{ ap.model }}
+                  <button type="button" class="btn btn-sm btn-primary add-product">Dodaj</button>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            <!-- Lista wybranych produktów -->
+            <div class="form-group">
+              <label>Wybrane produkty:</label>
+              <ul id="selectedProductsList" class="list-group"></ul>
+              <!-- Ukryte pole (JSON) -->
+              <input type="hidden" name="items" id="selectedProductsInput">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger">Potwierdź WYJAZ</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Modal do wyświetlania szczegółów produktu -->
+<div class="modal fade bg-dark" id="productDetailModal" tabindex="-1" role="dialog" aria-labelledby="productDetailLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content bg-dark">
+
+      <div class="modal-header bg-dark">
+        <h5 class="modal-title" id="productDetailLabel">Szczegóły produktu</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Zamknij">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body" id="productDetailContent">
+        <!-- Tu wstawimy dane AJAX-owo -->
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Inicjalizacja wykresu Chart.js
+  var inWarehouse = {{ in_warehouse_count }};
+  var onRoad = {{ on_road_count }};
+  var ctx = document.getElementById('productChart').getContext('2d');
+  var productChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['W magazynie', 'Na wyjeździe'],
+      datasets: [{
+        data: [inWarehouse, onRoad],
+        backgroundColor: ['#28a745', '#dc3545']
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    }
+  });
+
+  // Otwieranie modala WYJAZ
+  $('#openBorrowModal').on('click', function(){
+    $('#borrowModal').modal('show');
+  });
+</script>
+{% endblock %}
