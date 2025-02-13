@@ -4,7 +4,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from . import views
-from .views import AddProductView
+from .views import AddProductView, early_return, OrderCreateView
 
 app_name = 'inventory'
 
@@ -28,6 +28,8 @@ urlpatterns = [
 
     # Szczegoly produktu
     path('product/<int:pk>/detail_ajax/', views.product_detail_ajax, name='product_detail_ajax'),
+    path('order/create/', OrderCreateView.as_view(), name='order_create'),
+    path('order/return/', early_return, name='early_return'),
 
 
 ]

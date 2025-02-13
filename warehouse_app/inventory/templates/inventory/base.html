@@ -13,7 +13,12 @@
 <body>
   <!-- Górny pasek nawigacji (navbar) -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url 'inventory:dashboard' %}">Magazyn</a>
+    <a class="navbar-brand" href="{% url 'inventory:dashboard' %}"><strong>MAGAZYN</strong></a>
+        <a class="nav-link" href="{% url 'inventory:dashboard' %}">Produkty</a>
+    <a class="nav-link" href="{% url 'inventory:komplety' %}">Zestawy</a>
+        <a class="nav-link" href="#">Zlecenia</a>
+
+
     <div class="collapse navbar-collapse"></div>
     <div class="ml-auto mr-3 d-flex align-items-center">
       <!-- Przycisk zmiany motywu -->
@@ -36,12 +41,7 @@
       <nav class="col-md-2 d-none d-md-block sidebar">
         <div class="sidebar-sticky mt-2">
           <ul class="nav flex-column">
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'inventory:dashboard' %}">Produkty</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'inventory:komplety' %}">Zestawy</a>
-  </li>
+
   {% if user.is_superuser %}
   <li class="nav-item mt-3">
     <a class="nav-link btn btn-success text-white" href="{% url 'inventory:add_product' %}">
@@ -49,6 +49,22 @@
     </a>
   </li>
   {% endif %}
+            <!-- Przycisk "Dodaj zlecenie" -->
+<li class="nav-item mt-3">
+  <a class="nav-link btn btn-primary text-white"
+     href="{% url 'inventory:order_create' %}">
+    Dodaj zlecenie
+  </a>
+</li>
+
+<!-- Przycisk "Zwrot" -->
+<li class="nav-item mt-3">
+  <a class="nav-link btn btn-warning text-white"
+     href="{% url 'inventory:early_return' %}">
+    Zwrot
+  </a>
+</li>
+
 </ul>
 
         </div>

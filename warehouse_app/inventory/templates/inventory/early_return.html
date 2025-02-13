@@ -1,0 +1,18 @@
+{% extends "inventory/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Wybierz rezerwację do zakończenia</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="order_id">Rezerwacje:</label>
+    <select name="order_id" class="form-control">
+      {% for o in orders %}
+        <option value="{{ o.id }}">{{ o.name }} ({{ o.get_status_display }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-danger">Zakończ zlecenie</button>
+</form>
+{% endblock %}

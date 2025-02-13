@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import date
 from io import BytesIO
 from django.conf import settings
 from django.db import models
@@ -106,3 +107,80 @@ class BorrowingRecord(models.Model):
 
     def __str__(self):
         return f"{self.product} wypożyczony przez {self.user} od {self.borrow_start} do {self.borrow_end}"
+
+
+
+from .models import Product  # zakładamy, że Product już istnieje
+
+User = get_user_model()
+
+
+class Order(models.Model):
+    STATUS_CHOICES = (
+        ('reserved', 'Zarezerwowane'),   # Domyślnie
+        ('in_progress', 'W toku'),
+        ('completed', 'Zakończone'),
+        ('canceled', 'Anulowane'),
+    )
+
+    name = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='reserved')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    # daty
+    reservation_date = models.DateField(help_text="Data rezerwacji (złożenia zamówienia)")
+    pickup_date = models.DateField(help_text="Data odbioru")
+    return_date = models.DateField(help_text="Data zwrotu")
+    # lista produktów
+    products = models.ManyToManyField('inventory.Product', blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Order {self.id} - {self.name}"
+
+    def update_status_if_needed(self):
+        """
+        Metoda, która na podstawie bieżącej daty ustawia
+        odpowiedni status: in_progress (jeśli dzisiaj w zakresie),
+        completed (dzień po return_date),
+        w innym wypadku status pozostaje reserved/canceled itp.
+        """
+        today = date.today()
+
+        # Jeśli zamówienie nie jest canceled ani completed, sprawdzamy logikę
+        if self.status not in ['canceled', 'completed']:
+            if self.pickup_date <= today <= self.return_date:
+                self.status = 'in_progress'
+            elif today > self.return_date:
+                self.status = 'completed'
+            else:
+                # wciąż 'reserved' lub inne
+                pass
+
+            self.save()
+
+    def set_products_in_out(self):
+        """
+        Ustawia status produktów w zależności od statusu zamówienia:
+          - in_progress => produkty "wyjezd"
+          - completed / canceled => produkty wracają do "magazyn"
+        """
+        if self.status == 'in_progress':
+            for p in self.products.all():
+                if p.state == 'magazyn':
+                    p.state = 'wyjezd'
+                    p.save(update_fields=['state'])
+        elif self.status in ['completed', 'canceled']:
+            for p in self.products.all():
+                if p.state == 'wyjezd':
+                    p.state = 'magazyn'
+                    p.save(update_fields=['state'])
+
+    def save(self, *args, **kwargs):
+        # Najpierw normalny zapis
+        super().save(*args, **kwargs)
+        # Następnie aktualizacja stanu (bo np. w pickup_date w przyszłości)
+        self.update_status_if_needed()
+        # Ustaw produkty
+        self.set_products_in_out()

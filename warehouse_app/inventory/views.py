@@ -193,3 +193,42 @@ def product_detail_ajax(request, pk):
         'photo_url': product.photo_original.url if product.photo_original else '',
     }
     return JsonResponse(data)
+
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Order, Product
+from .forms import OrderForm  # musisz stworzyć w forms.py
+
+class OrderCreateView(LoginRequiredMixin, CreateView):
+    model = Order
+    template_name = 'inventory/order_form.html'
+    form_class = OrderForm  # musisz zdefiniować form z polami: name, pickup_date, return_date, products
+    success_url = reverse_lazy('inventory:dashboard')
+
+    def form_valid(self, form):
+        # Ustaw usera na bieżącego
+        form.instance.user = self.request.user
+        # Ustaw domyślnie reservation_date = today
+        form.instance.reservation_date = form.instance.reservation_date or timezone.now().date()
+        return super().form_valid(form)
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def early_return(request):
+    # Tylko rezerwacje usera
+    orders = Order.objects.filter(user=request.user).exclude(status__in=['completed', 'canceled'])
+    # user wybiera z listy, w GET/POST
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        order = Order.objects.get(pk=order_id, user=request.user)
+        # Ustaw status 'completed'
+        order.status = 'completed'
+        order.save()  # co spowoduje, że set_products_in_out ustawi produkty na magazyn
+        return redirect('inventory:dashboard')
+
+    return render(request, 'inventory/early_return.html', {'orders': orders})
