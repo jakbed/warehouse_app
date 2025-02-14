@@ -26,7 +26,8 @@ class Product(models.Model):
                                    help_text="Opcjonalna nazwa własna")
     serial_number = models.CharField(max_length=100, blank=True, null=True,
                                      help_text="Opcjonalny numer seryjny")
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, help_text="Opis - jeśli posiada inne komponenty, lokalizacja")
+    weight = models.TextField(max_length=4, blank=True, null=True, help_text="Waga w kilogramach")
 
     # Oryginalne zdjęcie
     photo_original = models.ImageField(
