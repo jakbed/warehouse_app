@@ -95,20 +95,29 @@ class Komplet(models.Model):
         return self.name
 
 
-class BorrowingRecord(models.Model):
-    """
-    Historia wypożyczeń / wyjazdów. Rejestrujemy kto, kiedy i na jak długo wypożyczył dany produkt.
-    """
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='history')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    borrow_start = models.DateField()
-    borrow_end = models.DateField()
-    borrow_date = models.DateTimeField(auto_now_add=True)
-    return_date = models.DateTimeField(blank=True, null=True)
+from django.db import models
+from django.contrib.auth.models import User
+
+class Product(models.Model):
+    brand = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    code = models.CharField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.product} wypożyczony przez {self.user} od {self.borrow_start} do {self.borrow_end}"
+        return f"{self.brand} {self.model} ({self.code})"
 
+class BorrowHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    borrow_date = models.DateTimeField(auto_now_add=True)
+    return_date = models.DateTimeField(null=True, blank=True)
+
+    def is_returned(self):
+        return self.return_date is not None
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product} ({self.borrow_date} - {self.return_date or 'Nie zwrócono'})"
 
 
 from .models import Product  # zakładamy, że Product już istnieje

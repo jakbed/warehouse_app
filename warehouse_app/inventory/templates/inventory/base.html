@@ -1,9 +1,8 @@
 {% load static %}
-<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}Magazyn{% endblock %}</title>
+  <title>{% block title %}Magazyn - intro{% endblock %}</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- Własne style -->
@@ -12,7 +11,7 @@
 </head>
 <body>
   <!-- Górny pasek nawigacji (navbar) -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar ">
     <a class="navbar-brand" href="{% url 'inventory:dashboard' %}"><strong>MAGAZYN PERKUNA</strong></a>
         <a class="nav-link" href="{% url 'inventory:dashboard' %}">Produkty</a>
     <a class="nav-link" href="{% url 'inventory:komplety' %}">Zestawy</a>
@@ -20,14 +19,12 @@
 
 
     <div class="collapse navbar-collapse"></div>
-    <div class="ml-auto mr-3 d-flex align-items-center">
-      <!-- Przycisk zmiany motywu -->
-      <button id="toggle-theme" class="btn btn-outline-secondary mr-2">Zmień motyw</button>
+    <div class="ml-auto mr-3 align-items-center">
       <!-- Logowanie/wylogowanie -->
       {% if user.is_authenticated %}
         <form action="{% url 'inventory:logout' %}" method="post" style="display: inline;">
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline-danger">Wyloguj</button>
+        <button type="submit" class="btn btn-outline-danger">Wyloguj</button>
         </form>
       {% else %}
         <a class="btn btn-outline-primary" href="{% url 'inventory:login' %}">Zaloguj</a>
@@ -78,7 +75,26 @@
       <!-- Prawa kolumna: aside z wykresem (lub innymi danymi) -->
       <aside class="col-md-3 d-none d-md-block sidebar py-4">
         <div class="chart-container" style="width: 100%; height: 300px; margin: 0 auto;">
+          <h4>Statystyki</h4>
           <canvas id="productChart"></canvas>
+        </div>
+
+        <!-- Historia wypożyczeń -->
+        <div class="mt-4">
+          <h4>Historia wypożyczeń</h4>
+          {% if borrow_history %}
+            <ul class="list-group">
+              {% for entry in borrow_history %}
+                <li class="list-group-item">
+                  <strong>{{ entry.product_name }}</strong><br>
+                  Wypożyczono: {{ entry.borrow_date }}<br>
+                  Zwrot: {% if entry.return_date %}{{ entry.return_date }}{% else %}Nie zwrócono{% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>Brak historii wypożyczeń.</p>
+          {% endif %}
         </div>
       </aside>
     </div>

@@ -1,23 +1,25 @@
 $(document).ready(function(){
   console.log("main.js loaded.");
 
-  // --- [1] Obsługa trybu ciemnego (dark-theme) ---
-  let savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    $("body").addClass("dark-theme");
-  } else {
-    $("body").removeClass("dark-theme");
-  }
+   --- [1] Obsługa trybu ciemnego (dark-theme) ---
+  let savedTheme = localStorage.getItem("theme") || "dark"; // Domyślnie ciemny
+if (savedTheme === "dark") {
+  $("html, body").addClass("dark-theme");
+} else {
+  $("html, body").removeClass("dark-theme");
+}
+
 
   $("#toggle-theme").on("click", function(){
-    if ($("body").hasClass("dark-theme")) {
-      $("body").removeClass("dark-theme");
-      localStorage.setItem("theme", "light");
-    } else {
-      $("body").addClass("dark-theme");
-      localStorage.setItem("theme", "dark");
-    }
-  });
+  if ($("html").hasClass("dark-theme")) {
+    $("html, body").removeClass("dark-theme");
+    localStorage.setItem("theme", "light");
+  } else {
+    $("html, body").addClass("dark-theme");
+    localStorage.setItem("theme", "dark");
+  }
+});
+
 
   // --- [2] Lista wybranych produktów do wypożyczenia ---
   var selectedProducts = [];
