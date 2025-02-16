@@ -1,0 +1,159 @@
+:root {
+    --bs-body-bg: #212529; /* Główne tło - ciemne */
+    --bs-body-color: #f8f9fa; /* Tekst - jasny */
+    --bs-primary: #0d6efd; /* Niebieski Bootstrap */
+    --bs-secondary: #6c757d;
+    --bs-success: #198754;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-light: #f8f9fa;
+    --bs-dark: #343a40;
+}
+
+/* Główne ustawienia */
+html, body {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Kontenery */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Nawigacja */
+.navbar {
+    background-color: #343a40 !important;
+    border-bottom: 1px solid #495057;
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: var(--bs-light) !important;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--bs-primary) !important;
+}
+
+/* Przyciski */
+.btn {
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--bs-primary) !important;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7 !important;
+}
+
+.btn-success {
+    background-color: var(--bs-success) !important;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #157347 !important;
+}
+
+.btn-warning {
+    background-color: var(--bs-warning) !important;
+    border: none;
+    color: black;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800 !important;
+}
+
+.btn-danger {
+    background-color: var(--bs-danger) !important;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37 !important;
+}
+
+/* Panele i karty */
+.card, .modal-content, .dropdown-menu {
+    background-color: #2b3035 !important;
+    color: var(--bs-body-color) !important;
+    border: 1px solid #495057 !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Listy produktów */
+.list-group-item {
+    background-color: #2b3035 !important;
+    color: var(--bs-body-color) !important;
+    border-color: #6c757d !important;
+}
+
+/* Tabela */
+.table {
+    background-color: #2b3035 !important;
+    color: var(--bs-body-color) !important;
+    border-color: #6c757d !important;
+}
+
+.table th {
+    background-color: #343a40 !important;
+    color: var(--bs-light) !important;
+    font-weight: bold;
+}
+
+.table tbody tr {
+    background-color: #2b3035 !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Inputy i formularze */
+input, textarea, select {
+    background-color: #2b3035 !important;
+    color: var(--bs-light) !important;
+    border: 1px solid #495057 !important;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--bs-primary) !important;
+    outline: none;
+    box-shadow: 0 0 6px rgba(13, 110, 253, 0.5);
+}
+
+/* Statystyki */
+.stats-box {
+    background-color: #2b3035;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Stopka */
+.footer {
+    background-color: #212529;
+    color: var(--bs-secondary);
+    padding: 20px;
+    text-align: center;
+}
+
+
+

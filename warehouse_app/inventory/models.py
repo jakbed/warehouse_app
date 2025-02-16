@@ -2,13 +2,13 @@ import os
 import uuid
 from datetime import date
 from io import BytesIO
-from django.conf import settings
 from django.db import models
 from django.core.files.base import ContentFile
 from PIL import Image
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
 
 class Product(models.Model):
     """
@@ -27,7 +27,8 @@ class Product(models.Model):
     serial_number = models.CharField(max_length=100, blank=True, null=True,
                                      help_text="Opcjonalny numer seryjny")
     description = models.TextField(blank=True, null=True, help_text="Opis - jeśli posiada inne komponenty, lokalizacja")
-    weight = models.TextField(max_length=4, blank=True, null=True, help_text="Waga w kilogramach")
+    weight = models.CharField(max_length=4, blank=True, null=True, help_text="Waga w kilogramach")
+    ean = models.CharField(max_length=13, blank=True, null=True, help_text="Kod EAN")
 
     # Oryginalne zdjęcie
     photo_original = models.ImageField(
@@ -95,17 +96,6 @@ class Komplet(models.Model):
         return self.name
 
 
-from django.db import models
-from django.contrib.auth.models import User
-
-class Product(models.Model):
-    brand = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-    code = models.CharField(max_length=50, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.brand} {self.model} ({self.code})"
 
 class BorrowHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -127,7 +117,7 @@ User = get_user_model()
 
 class Order(models.Model):
     STATUS_CHOICES = (
-        ('reserved', 'Zarezerwowane'),   # Domyślnie
+        ('reserved', 'Zarezerwowane'),  # Domyślnie
         ('in_progress', 'W toku'),
         ('completed', 'Zakończone'),
         ('canceled', 'Anulowane'),

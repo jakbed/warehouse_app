@@ -4,7 +4,7 @@
 {% block title %}Magazyn{% endblock %}
 
 {% block content %}
-  <h2>Produkty na wyjeździe</h2>
+  <h2 class="text-light">Produkty na wyjeździe</h2>
   <div id="onRoadProducts">
     <ul class="list-group">
       {% for product in on_road_products %}
@@ -17,9 +17,9 @@
   </div>
 
   <hr>
-  <h2>Wszystkie produkty</h2>
+  <h2 class="text-light">Wszystkie produkty</h2>
   <!-- Formularz sortowania -->
-  <form id="sortForm" method="get" class="form-inline mb-3">
+  <form id="sortForm" method="get" class="form-inline mb-3 ">
     <label for="sort_by" class="mr-2">Sortuj po:</label>
     <select name="sort_by" id="sort_by" class="form-control mr-2">
       <option value="created_at">Data dodania</option>
@@ -129,9 +129,9 @@
 <!-- Modal do wyświetlania szczegółów produktu -->
 <div class="modal fade bg-dark" id="productDetailModal" tabindex="-1" role="dialog" aria-labelledby="productDetailLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content bg-dark">
+    <div class="modal-content">
 
-      <div class="modal-header bg-dark">
+      <div class="modal-header">
         <h5 class="modal-title" id="productDetailLabel">Szczegóły produktu</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Zamknij">
           <span aria-hidden="true">&times;</span>

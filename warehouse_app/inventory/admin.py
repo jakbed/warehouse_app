@@ -2,12 +2,15 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Product, Komplet, BorrowingRecord
+from .models import Product, Komplet
 
+from django.conf.locale.es import formats as es_formats
+
+es_formats.DATETIME_FORMAT = "d M Y H:i:s"
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('brand', 'model', 'code', 'state', 'created_at')
-    search_fields = ('brand', 'model', 'code', 'custom_name', 'serial_number')
+    list_display = ('brand', 'model', 'code', 'state', 'ean')
+    search_fields = ('brand', 'model', 'code', 'custom_name', 'serial_number', 'ean')
     list_filter = ('state', 'brand')
     readonly_fields = ('code', 'created_at',)
 
@@ -17,8 +20,4 @@ class KompletAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     filter_horizontal = ('products',)
 
-@admin.register(BorrowingRecord)
-class BorrowingRecordAdmin(admin.ModelAdmin):
-    list_display = ('product', 'user', 'borrow_start', 'borrow_end', 'borrow_date', 'return_date')
-    search_fields = ('product__brand', 'product__model', 'user__username')
-    list_filter = ('borrow_start', 'borrow_end', 'user')
+

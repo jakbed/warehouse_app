@@ -10,7 +10,7 @@ from django.utils import timezone
 from datetime import datetime
 import json
 
-from .models import Product, BorrowingRecord, Komplet
+from .models import Product, Komplet
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):

@@ -6,12 +6,12 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- Własne style -->
-  <link rel="stylesheet" href="{% static 'inventory/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static '/css/styles.css' %}">
   {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body class="bg-body">
   <!-- Górny pasek nawigacji (navbar) -->
-  <nav class="navbar ">
+  <nav class="navbar bg-body">
     <a class="navbar-brand" href="{% url 'inventory:dashboard' %}"><strong>MAGAZYN PERKUNA</strong></a>
         <a class="nav-link" href="{% url 'inventory:dashboard' %}">Produkty</a>
     <a class="nav-link" href="{% url 'inventory:komplety' %}">Zestawy</a>
@@ -48,7 +48,7 @@
   {% endif %}
             <!-- Przycisk "Dodaj zlecenie" -->
 <li class="nav-item mt-3">
-  <a class="nav-link btn btn-primary text-white"
+  <a class="nav-link btn btn-secondary text-white"
      href="{% url 'inventory:order_create' %}">
     Dodaj zlecenie
   </a>
@@ -75,13 +75,11 @@
       <!-- Prawa kolumna: aside z wykresem (lub innymi danymi) -->
       <aside class="col-md-3 d-none d-md-block sidebar py-4">
         <div class="chart-container" style="width: 100%; height: 300px; margin: 0 auto;">
-          <h4>Statystyki</h4>
+            <h4>Statystyki</h4>
           <canvas id="productChart"></canvas>
-        </div>
-
-        <!-- Historia wypożyczeń -->
-        <div class="mt-4">
-          <h4>Historia wypożyczeń</h4>
+          <div>
+            <div class="mt-4">
+          <h4>Twoja historia</h4>
           {% if borrow_history %}
             <ul class="list-group">
               {% for entry in borrow_history %}
@@ -96,13 +94,18 @@
             <p>Brak historii wypożyczeń.</p>
           {% endif %}
         </div>
+          </div>
+        </div>
+
+        <!-- Historia wypożyczeń -->
+
       </aside>
     </div>
   </div>
 
   <!-- Skrypty -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="{% static 'inventory/js/main.js' %}"></script>
   {% block extra_js %}{% endblock %}
