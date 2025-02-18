@@ -1,13 +1,11 @@
+
+
 $(document).ready(function(){
+    console.log("Zaladowano js")
+
   console.log("main.js loaded.");
 
-   --- [1] Obsługa trybu ciemnego (dark-theme) ---
-  let savedTheme = localStorage.getItem("theme") || "dark"; // Domyślnie ciemny
-if (savedTheme === "dark") {
-  $("html, body").addClass("dark-theme");
-} else {
-  $("html, body").removeClass("dark-theme");
-}
+
 
 
   $("#toggle-theme").on("click", function(){
@@ -121,6 +119,37 @@ if (savedTheme === "dark") {
 
 
 });
+
+$('.product-item').on('click', function(){
+    var productId = $(this).data('id');
+
+    // Wykonujemy zapytanie AJAX do endpointu, który zwraca szczegóły produktu
+    $.ajax({
+      url: "/product/" + productId + "/detail/",  // Upewnij się, że endpoint jest poprawnie skonfigurowany
+      method: "GET",
+      success: function(data) {
+        // Budujemy zawartość modala – przykładowo:
+        var html = '<p><strong>Kod:</strong> ' + data.code + '</p>' +
+                   '<p><strong>Marka/Model:</strong> ' + data.brand + ' ' + data.model + '</p>' +
+                   '<p><strong>Nazwa własna:</strong> ' + (data.custom_name || '-') + '</p>' +
+                   '<p><strong>Numer seryjny:</strong> ' + (data.serial_number || '-') + '</p>' +
+                   '<p><strong>Opis:</strong> ' + (data.description || '-') + '</p>';
+
+        // Jeśli masz zdjęcie, możesz je również wyświetlić:
+        if(data.photo_url) {
+          html += '<p><img src="' + data.photo_url + '" class="img-fluid" alt="Zdjęcie produktu"></p>';
+        }
+
+        // Wstawiamy dane do modala
+        $('#productDetailContent').html(html);
+        // Otwieramy modal
+        $('#productDetailModal').modal('show');
+      },
+      error: function(xhr, status, error) {
+        console.error("Błąd pobierania szczegółów produktu:", error);
+      }
+    });
+  });
 
 
 });

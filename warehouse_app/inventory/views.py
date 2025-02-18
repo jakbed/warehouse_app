@@ -56,11 +56,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 @login_required
 def product_detail_ajax(request, pk):
-    """
-    Endpoint AJAX zwracający dane o produkcie (m.in. historię).
-    """
     product = get_object_or_404(Product, pk=pk)
-    history = product.history.order_by('-borrow_date')
     data = {
         'brand': product.brand,
         'model': product.model,
@@ -68,19 +64,7 @@ def product_detail_ajax(request, pk):
         'custom_name': product.custom_name,
         'serial_number': product.serial_number,
         'description': product.description,
-        'state': product.get_state_display(),
-        'photo_url': product.photo_original.url if product.photo_original else '',
-        'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
-        'history': [
-            {
-                'borrow_start': h.borrow_start.strftime('%Y-%m-%d'),
-                'borrow_end': h.borrow_end.strftime('%Y-%m-%d'),
-                'borrow_date': h.borrow_date.strftime('%Y-%m-%d %H:%M'),
-                'return_date': h.return_date.strftime('%Y-%m-%d %H:%M') if h.return_date else None,
-                'user': h.user.username,
-            }
-            for h in history
-        ]
+        'photo_url': product.photo_converted.url if product.photo_converted else product.photo_original.url if product.photo_original else ''
     }
     return JsonResponse(data)
 
@@ -163,6 +147,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from .models import Product
 
+
 class AddProductView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     template_name = 'inventory/add_product_form.html'  # Plik szablonu, który zaraz stworzymy
@@ -194,11 +179,13 @@ def product_detail_ajax(request, pk):
     }
     return JsonResponse(data)
 
+
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Order, Product
 from .forms import OrderForm  # musisz stworzyć w forms.py
+
 
 class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
@@ -216,6 +203,7 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+
 
 @login_required
 def early_return(request):

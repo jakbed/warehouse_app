@@ -10,10 +10,18 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = "Kategorie"
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
-    """
-    Model opisujący pojedynczy produkt w magazynie.
-    """
+
     STATE_CHOICES = (
         ('magazyn', 'Magazyn'),
         ('wyjezd', 'Na wyjeździe'),
@@ -24,11 +32,14 @@ class Product(models.Model):
     model = models.CharField(max_length=50)
     custom_name = models.CharField(max_length=100, blank=True, null=True,
                                    help_text="Opcjonalna nazwa własna")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name="products")
     serial_number = models.CharField(max_length=100, blank=True, null=True,
-                                     help_text="Opcjonalny numer seryjny")
+                                 help_text="Opcjonalny numer seryjny")
     description = models.TextField(blank=True, null=True, help_text="Opis - jeśli posiada inne komponenty, lokalizacja")
     weight = models.CharField(max_length=4, blank=True, null=True, help_text="Waga w kilogramach")
     ean = models.CharField(max_length=13, blank=True, null=True, help_text="Kod EAN")
+    quantity = models.PositiveSmallIntegerField(default="1", help_text="Ilość")
+
 
     # Oryginalne zdjęcie
     photo_original = models.ImageField(
@@ -47,6 +58,7 @@ class Product(models.Model):
     state = models.CharField(max_length=10, choices=STATE_CHOICES, default='magazyn')
     created_at = models.DateTimeField(auto_now_add=True)
 
+
     def save(self, *args, **kwargs):
         # Generowanie kodu, jeśli nie został podany
         if not self.code:
@@ -59,6 +71,7 @@ class Product(models.Model):
         # Konwersja obrazu do WebP, jeśli przesłano oryginalne zdjęcie
         if self.photo_original:
             self.convert_image()
+
 
     def convert_image(self):
         if not self.photo_original:
@@ -81,6 +94,7 @@ class Product(models.Model):
         self.photo_converted.save(converted_path, img_content, save=False)
         super().save(update_fields=['photo_converted'])
 
+
     def __str__(self):
         return f"{self.brand} {self.model} ({self.code})"
 
@@ -92,9 +106,8 @@ class Komplet(models.Model):
     name = models.CharField(max_length=100)
     products = models.ManyToManyField(Product, related_name='komplety', blank=True)
 
-    def __str__(self):
-        return self.name
-
+    class Meta:
+        verbose_name_plural = "Zestawy"
 
 
 class BorrowHistory(models.Model):
